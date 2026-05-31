@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Kelulusan - Manajemen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #4338ca;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8">
+
+    <!-- Header dengan Logo Kiri & Kanan -->
+    <header id="headerBar"
+        class="p-6 rounded-3xl shadow-2xl flex items-center justify-between text-white mb-8 transition-all duration-500"
+        style="background-color: var(--primary-color);">
+        <!-- <img id="logoKiri" src="img/logo122.jpg" class="w-16 h-16 rounded-full bg-white p-1 object-cover shadow-lg border-2 border-white/20"> -->
+        <img src="img/jayaraya.png"
+            class="w-16 h-16 rounded-full bg-white p-1 object-cover shadow-lg border-2 border-white/20">
+        <h1 id="headerSekolah" class="text-xl md:text-3xl font-extrabold tracking-tight text-center px-4">Portal
+            Kelulusan</h1>
+        <img id="logoKanan" src="img/logo122.jpg" alt="Logo Jaya Raya"
+            class="w-16 h-16 object-contain bg-white rounded-full p-1 shadow-lg">
+    </header>
+
+    <main class="max-w-4xl mx-auto">
+        <!-- Portal Siswa -->
+        <section id="portalSection" class="glass p-8 rounded-3xl shadow-xl">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Cek Hasil Kelulusan</h2>
+            <div class="space-y-4">
+                <input type="text" id="nisnInput" placeholder="Masukkan Nomor NISN Anda..."
+                    class="w-full p-4 border-none rounded-2xl shadow-inner bg-white/70 outline-none focus:ring-4 focus:ring-indigo-200 transition-all">
+                <button onclick="checkKelulusan()" style="background-color: var(--primary-color);"
+                    class="w-full py-4 text-white rounded-2xl font-bold shadow-lg hover:brightness-110 transition-all">Lihat
+                    Status Kelulusan</button>
+                <div id="resultBox" class="mt-6 p-6 bg-white/90 border-l-8 rounded-r-2xl hidden shadow-md"></div>
+            </div>
+        </section>
+
+        <!-- Dashboard Admin -->
+        <section id="adminSection" class="hidden glass p-8 rounded-3xl shadow-xl">
+            <h2 class="text-xl font-bold mb-6 text-slate-800">⚙️ Pengaturan Admin</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" id="editNamaSekolah" placeholder="Nama Sekolah"
+                    class="p-4 rounded-xl border border-white/50 bg-white/60">
+                <div class="flex items-center gap-4 p-2 bg-white/60 rounded-xl px-4">
+                    <label class="text-sm font-medium">Warna Tema:</label>
+                    <input type="color" id="editWarna" class="h-10 w-20 cursor-pointer rounded">
+                </div>
+                <input type="text" id="editLogoUrl" placeholder="URL Gambar Logo Sekolah (Kiri)"
+                    class="p-4 rounded-xl border border-white/50 bg-white/60">
+                <input type="text" id="editLogoKananUrl" placeholder="URL Gambar Logo Kanan (Jaya Raya/Lainnya)"
+                    class="p-4 rounded-xl border border-white/50 bg-white/60">
+                <input type="password" id="editPassword" placeholder="Password Admin"
+                    class="p-4 rounded-xl border border-white/50 bg-white/60 md:col-span-2">
+            </div>
+            <div class="mt-6">
+                <label class="block text-sm font-medium mb-2 text-slate-600">Database Siswa (NISN,Nama,RataRata)</label>
+                <textarea id="importData" placeholder="1001,Budi,87.5&#10;1002,Siti,90.0"
+                    class="w-full p-4 rounded-xl border border-white/50 bg-white/60 h-32 font-mono text-sm"></textarea>
+            </div>
+            <button onclick="saveAdminSettings()"
+                class="mt-8 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold w-full hover:bg-black transition-all shadow-lg">Simpan
+                & Perbarui Data</button>
+        </section>
+    </main>
+
+    <!-- Tombol Admin Floating di Pojok Kanan Bawah -->
+    <button onclick="requestAdminAccess()"
+        class="fixed bottom-6 right-6 bg-slate-800 text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+    </button>
+
+    <div id="msgBox" class="fixed bottom-6 left-6 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl hidden z-50">
+    </div>
+
+    <script src="data.js"></script>
+
+    <script>
+        let appConfig = JSON.parse(localStorage.getItem('appConfig')) || { namaSekolah: "SMP Negeri 1", warnaPrimer: "#4338ca", logoKiri: "", logoKanan: "https://upload.wikimedia.org/wikipedia/id/thumb/7/75/Lambang_Kota_Jakarta.svg/100px-Lambang_Kota_Jakarta.svg.png", adminPassword: "admin" };
+        // let dataSiswa = JSON.parse(localStorage.getItem('dataSiswa')) || [{ nisn: "1001", nama: "Budi Santoso", rataRata: 87.5 }];
+        let dataSiswa = siswaData;
+
+        function showMsg(txt) {
+            const m = document.getElementById('msgBox');
+            m.innerText = txt;
+            m.classList.remove('hidden');
+            setTimeout(() => m.classList.add('hidden'), 3000);
+        }
+
+        function updateUI() {
+            document.documentElement.style.setProperty('--primary-color', appConfig.warnaPrimer);
+            document.getElementById('headerSekolah').innerText = appConfig.namaSekolah;
+            document.getElementById('headerBar').style.backgroundColor = appConfig.warnaPrimer;
+            document.getElementById('logoKiri').src = appConfig.logoKiri || "https://placehold.co/100x100/ffffff/4338ca?text=LOGO";
+            document.getElementById('logoKanan').src = appConfig.logoKanan;
+        }
+
+        function requestAdminAccess() {
+            const pass = prompt("Masukkan Password Admin:");
+            if (pass === appConfig.adminPassword) {
+                document.getElementById('portalSection').classList.add('hidden');
+                document.getElementById('adminSection').classList.remove('hidden');
+                document.getElementById('editNamaSekolah').value = appConfig.namaSekolah;
+                document.getElementById('editWarna').value = appConfig.warnaPrimer;
+                document.getElementById('editLogoUrl').value = appConfig.logoKiri;
+                document.getElementById('editLogoKananUrl').value = appConfig.logoKanan;
+                document.getElementById('editPassword').value = appConfig.adminPassword;
+            } else {
+                showMsg("Password Salah!");
+            }
+        }
+
+        function saveAdminSettings() {
+            appConfig.namaSekolah = document.getElementById('editNamaSekolah').value;
+            appConfig.warnaPrimer = document.getElementById('editWarna').value;
+            appConfig.logoKiri = document.getElementById('editLogoUrl').value;
+            appConfig.logoKanan = document.getElementById('editLogoKananUrl').value;
+            appConfig.adminPassword = document.getElementById('editPassword').value;
+
+            const csvText = document.getElementById('importData').value;
+            if (csvText.trim()) {
+                dataSiswa = csvText.trim().split('\n').map(l => {
+                    const [nisn, nama, rataRata] = l.split(',');
+                    return { nisn: nisn.trim(), nama: nama.trim(), rataRata: rataRata.trim() };
+                });
+                localStorage.setItem('dataSiswa', JSON.stringify(dataSiswa));
+            }
+
+            localStorage.setItem('appConfig', JSON.stringify(appConfig));
+            updateUI();
+            showMsg("Perubahan berhasil disimpan!");
+            // Kembali ke portal setelah simpan
+            document.getElementById('adminSection').classList.add('hidden');
+            document.getElementById('portalSection').classList.remove('hidden');
+        }
+
+        function checkKelulusan() {
+            const nisn = document.getElementById('nisnInput').value;
+            // const s = dataSiswa.find(x => x.nisn === nisn);
+            const s = dataSiswa.find(x => x["NISN"] === nisn);
+            const box = document.getElementById('resultBox');
+            if (s) {
+                box.classList.remove('hidden');
+                box.style.borderColor = appConfig.warnaPrimer;
+                // box.innerHTML = `<p class="text-lg">Selamat <strong>${s["Nama Siswa"]}${s.nama}</strong>,</p><p class="text-2xl font-bold">Anda Dinyatakan Lulus!</p><p class="mt-2">Nilai Rata-rata: <span class="font-bold">${s.rataRata}</span></p>`;
+                box.innerHTML = `
+<p class="text-lg">
+Selamat <strong>${s["Nama Siswa"]}</strong>,
+</p>
+
+<p class="text-2xl font-bold text-green-600">
+ANDA DINYATAKAN LULUS
+</p>
+
+<p class="mt-2">
+Nilai Rata-rata:
+<span class="font-bold">
+${s["RAT RATA"].toFixed(2)}
+</span>
+</p>
+`;
+            } else {
+                showMsg("Data NISN tidak ditemukan.");
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+
+</html>
