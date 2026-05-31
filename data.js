@@ -15,12 +15,12 @@ const siswaData = [
   "RAT RATA": 85.18333333333334
  },
  {
-  "NISN": 109083573,
+  "NISN": "0109083573",
   "Nama Siswa": "Angelina Christin",
   "RAT RATA": 85.05
  },
  {
-  "NISN": 86461125,
+  "NISN": "086461125",
   "Nama Siswa": "Aprillia Hendrawan",
   "RAT RATA": 83.33333333333334
  },
